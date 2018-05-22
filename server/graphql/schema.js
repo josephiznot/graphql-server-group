@@ -1,16 +1,5 @@
 const { buildSchema } = require("graphql");
-const bcrypt = require("bcrypt");
-
-class User {
-  constructor({ user_id, user_name, user_email, user_password, profile_pic }) {
-    this.user_id = user_id;
-    this.user_name = user_name;
-    this.user_email = user_email;
-    this.user_password = user_password;
-    this.profile_pic = profile_pic;
-    // this.start_date = start_date;
-  }
-}
+const { getUsers, getUser, addUser } = require(`${__dirname}/schemaCtrl`);
 
 const schema = buildSchema(`
     type User{
@@ -19,23 +8,28 @@ const schema = buildSchema(`
         user_email: String!
         user_password: String!
         profile_pic: String!
+        current_lesson: Int
+        progress_bar: Float
+        start_date: String!
+        coding_background: String
+        purpose: String
     }
     type Query{
         getUsers: [User]!
+        getUser(id: Int!): User!
+    }
+    type Mutation{
+        addUser(
+            user_name: String!
+            user_email: String!
+            user_password: String!
+        ): User!
     }
 `);
 const root = {
-  getUsers(_, req) {
-    return req.app
-      .get("db")
-      .get_users()
-      .then(users => {
-        return users.map((e, i) => {
-          console.log(e);
-          return new User(e);
-        });
-      });
-  }
+  getUser,
+  getUsers,
+  addUser
 };
 module.exports = {
   root,
