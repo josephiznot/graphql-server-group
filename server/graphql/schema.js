@@ -1,5 +1,10 @@
 const { buildSchema } = require("graphql");
-const { getUsers, getUser, addUser } = require(`${__dirname}/schemaCtrl`);
+const {
+  getUsers,
+  getUser,
+  addUser,
+  verifyUser
+} = require(`${__dirname}/schemaCtrl`);
 
 const schema = buildSchema(`
     type User{
@@ -17,6 +22,7 @@ const schema = buildSchema(`
     type Query{
         getUsers: [User]!
         getUser(id: Int!): User!
+        verifyUser(user_name: String, user_email: String, user_password: String!): User!
     }
     type Mutation{
         addUser(
@@ -29,7 +35,8 @@ const schema = buildSchema(`
 const root = {
   getUser,
   getUsers,
-  addUser
+  addUser,
+  verifyUser
 };
 module.exports = {
   root,
