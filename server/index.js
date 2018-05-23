@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const port = process.env.PORT || 4890;
+const port = process.env.PORT || 4891;
 const massive = require("massive");
 const { json } = require("body-parser");
 const session = require("session");
@@ -13,7 +13,8 @@ const { schema, root } = require(`${__dirname}/graphql/schema.js`);
 app.use(json());
 app.use(cors());
 
-massive(process.env.DB_CONNECTION).then(db => {
+massive(process.env.DB_CONNECTION_STRING).then(db => {
+  // console.log(db);
   app.set("db", db);
 });
 

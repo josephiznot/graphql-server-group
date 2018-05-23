@@ -45,27 +45,26 @@ function getUser({ id }, req) {
     });
 }
 function addUser({ user_name, user_email, user_password }, req) {
-  console.log(user_name, user_email, user_password);
   const start_date = new Date();
   return req.app
     .get("db")
     .add_user([
       user_name,
-      user_email,
       bcrypt.hashSync(user_password, 10),
+      user_email,
       start_date
     ])
     .then(user => {
-      console.log(user);
       return new User(user[0]);
     });
 }
 function verifyUser({ user_name, user_email, user_password }, req) {
-  console.log(`verifying...${user_name || user_email}`);
+  console.log(user_name, user_password);
   return req.app
     .get("db")
     .get_users()
     .then(response => {
+      console.log(response);
       const filtered = response.filter(e => {
         return e.user_email === user_email || e.user_name === user_name;
       });
@@ -76,12 +75,24 @@ function verifyUser({ user_name, user_email, user_password }, req) {
       }
     })
     .then(credentials => {
+      console.log(credentials);
+      console.log(credentials.user_password);
       if (bcrypt.compareSync(user_password, credentials.user_password)) {
         return new User(credentials);
       } else {
         throw new Error("password incorrect");
       }
     });
+}
+function deleteUser({ id }, req) {
+  return req.app
+    .get("db")
+    .delete_user(id)
+    .then(deletedUser => {
+      console.log(deletedUser);
+      return new User(deletedUser[0]);
+    })
+    .catch(console.log);
 }
 module.exports = {
   getUsers,
