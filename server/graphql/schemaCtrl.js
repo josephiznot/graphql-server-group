@@ -42,7 +42,8 @@ function getUser({ id }, req) {
       return users.filter(e => {
         return e.user_id === id;
       })[0];
-    });
+    })
+    .catch(console.log);
 }
 function addUser({ user_name, user_email, user_password }, req) {
   const start_date = new Date();
@@ -56,7 +57,8 @@ function addUser({ user_name, user_email, user_password }, req) {
     ])
     .then(user => {
       return new User(user[0]);
-    });
+    })
+    .catch(console.log);
 }
 function verifyUser({ user_name, user_email, user_password }, req) {
   console.log(user_name, user_password);
@@ -64,7 +66,6 @@ function verifyUser({ user_name, user_email, user_password }, req) {
     .get("db")
     .get_users()
     .then(response => {
-      console.log(response);
       const filtered = response.filter(e => {
         return e.user_email === user_email || e.user_name === user_name;
       });
@@ -75,14 +76,13 @@ function verifyUser({ user_name, user_email, user_password }, req) {
       }
     })
     .then(credentials => {
-      console.log(credentials);
-      console.log(credentials.user_password);
       if (bcrypt.compareSync(user_password, credentials.user_password)) {
         return new User(credentials);
       } else {
         throw new Error("password incorrect");
       }
-    });
+    })
+    .catch(console.log);
 }
 function deleteUser({ id }, req) {
   return req.app
